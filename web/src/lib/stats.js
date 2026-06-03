@@ -245,6 +245,25 @@ export function calcularEstadisticas(mensajes) {
     mensajes.length
   )
 
+  const maximosGrupo = {
+    total: 1,
+    imagen: 1,
+    audio: 1,
+    sticker: 1,
+    emojis: 1,
+    palabras: 1,
+    risas: 1,
+  }
+  for (const p of listaPersonas) {
+    if (p.total > maximosGrupo.total) maximosGrupo.total = p.total
+    if (p.tipos.imagen > maximosGrupo.imagen) maximosGrupo.imagen = p.tipos.imagen
+    if (p.tipos.audio > maximosGrupo.audio) maximosGrupo.audio = p.tipos.audio
+    if (p.tipos.sticker > maximosGrupo.sticker) maximosGrupo.sticker = p.tipos.sticker
+    if (p.emojis > maximosGrupo.emojis) maximosGrupo.emojis = p.emojis
+    if (p.palabras > maximosGrupo.palabras) maximosGrupo.palabras = p.palabras
+    if (p.risas > maximosGrupo.risas) maximosGrupo.risas = p.risas
+  }
+
   return {
     totalMensajes: mensajes.length,
     totalTipos,
@@ -274,6 +293,7 @@ export function calcularEstadisticas(mensajes) {
     topPareja,
     medallas,
     curiosidades,
+    maximosGrupo,
   }
 }
 

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { formatearDuracion } from '../lib/stats'
+import UserRadarChart from './UserRadarChart'
 
 const TIPOS_INFO = [
   { tipo: 'imagen', icono: '📷', label: 'Imágenes' },
@@ -14,7 +15,7 @@ function inicial(nombre) {
   return nombre.trim().charAt(0).toUpperCase()
 }
 
-export default function PersonModal({ persona, total, color, onClose }) {
+export default function PersonModal({ persona, total, color, maximosGrupo, onClose }) {
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -62,6 +63,14 @@ export default function PersonModal({ persona, total, color, onClose }) {
         </div>
 
         <div className="space-y-6 p-6">
+          {/* ADN del Usuario */}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-slate-500">ADN del Usuario</h3>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/30 p-2 border border-slate-100 dark:border-slate-800/50 flex justify-center">
+              <UserRadarChart persona={persona} maximos={maximosGrupo} />
+            </div>
+          </div>
+
           {/* Mini stats */}
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
             <Mini valor={persona.palabras} label="Palabras" />
