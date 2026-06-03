@@ -38,9 +38,9 @@ npm run preview  # previsualizar la build
 
 1. Abre el grupo en WhatsApp.
 2. Menú (⋮) o nombre del grupo → **Exportar chat**.
-3. Elige **Sin archivos** (más rápido) o **Con archivos** (distingue mejor los
-   tipos de multimedia).
-4. Guarda el `.txt` y arrástralo a la web.
+3. Elige **Sin archivos** (te da un `.txt`) o **Con archivos** (te da un `.zip`).
+   La web acepta los dos: si subes el `.zip`, saca el chat automáticamente.
+4. Guarda el archivo y arrástralo a la web.
 
 > En la carpeta `public/` tienes `ejemplo_chat.txt` para probar la app.
 

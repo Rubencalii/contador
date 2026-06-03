@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import JSZip from 'jszip'
 import { parseChat } from './lib/parser'
 import { calcularEstadisticas } from './lib/stats'
 import Header from './components/Header'
@@ -21,18 +22,37 @@ export default function App() {
     localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')
   }, [oscuro])
 
+  // Abre el .zip exportado por WhatsApp y devuelve el texto del chat (.txt de dentro).
+  async function leerTxtDeZip(file) {
+    const zip = await JSZip.loadAsync(file)
+    const txts = Object.values(zip.files).filter(
+      (f) => !f.dir && f.name.toLowerCase().endsWith('.txt')
+    )
+    if (!txts.length) {
+      throw new Error('El .zip no contiene ningún archivo .txt del chat.')
+    }
+    // WhatsApp suele llamarlo "_chat.txt"; si no, cogemos el primero.
+    const chat =
+      txts.find((f) => f.name.toLowerCase().endsWith('_chat.txt')) || txts[0]
+    return chat.async('text')
+  }
+
   async function procesarArchivo(file) {
     setError('')
     setCargando(true)
     setNombreArchivo(file.name)
     try {
-      const texto = await file.text()
+      const esZip =
+        file.name.toLowerCase().endsWith('.zip') ||
+        file.type === 'application/zip' ||
+        file.type === 'application/x-zip-compressed'
+      const texto = esZip ? await leerTxtDeZip(file) : await file.text()
       // Pequeño respiro para que se vea el estado de carga.
       await new Promise((r) => setTimeout(r, 50))
       const mensajes = parseChat(texto)
       if (!mensajes.length) {
         setError(
-          'No se ha encontrado ningún mensaje. Asegúrate de subir el archivo .txt exportado desde WhatsApp.'
+          'No se ha encontrado ningún mensaje. Asegúrate de subir el .txt (o el .zip) exportado desde WhatsApp.'
         )
         setStats(null)
       } else {
@@ -40,7 +60,7 @@ export default function App() {
       }
     } catch (e) {
       console.error(e)
-      setError('Ha ocurrido un error al leer el archivo.')
+      setError(e?.message || 'Ha ocurrido un error al leer el archivo.')
     } finally {
       setCargando(false)
     }

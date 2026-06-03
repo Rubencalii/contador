@@ -50,7 +50,7 @@ export default function FileUpload({ onArchivo, error, cargando }) {
           <input
             ref={inputRef}
             type="file"
-            accept=".txt"
+            accept=".txt,.zip"
             className="hidden"
             onChange={(e) => manejarFiles(e.target.files)}
           />
@@ -65,7 +65,7 @@ export default function FileUpload({ onArchivo, error, cargando }) {
                 ⬆️
               </div>
               <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-                Arrastra aquí tu archivo <code className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-sm">.txt</code>
+                Arrastra aquí tu archivo <code className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-sm">.txt</code> o <code className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-sm">.zip</code>
               </p>
               <p className="mt-1 text-sm text-slate-500">
                 o haz clic para seleccionarlo
@@ -96,12 +96,12 @@ export default function FileUpload({ onArchivo, error, cargando }) {
             {
               n: '2',
               t: 'Exportar chat',
-              d: 'Elige “Exportar chat” → “Sin archivos” (o con archivos si quieres distinguir tipos).',
+              d: 'Elige “Exportar chat” → “Sin archivos” (.txt) o “Con archivos” (.zip). Las dos valen.',
             },
             {
               n: '3',
-              t: 'Sube el .txt',
-              d: 'Guarda el archivo, tráelo aquí y arrástralo a la zona de arriba.',
+              t: 'Sube el archivo',
+              d: 'Tráelo aquí y arrástralo a la zona de arriba: acepta tanto el .txt como el .zip.',
             },
           ].map((p) => (
             <div
