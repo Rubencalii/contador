@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { parseChat } from './lib/parser'
 import { calcularEstadisticas } from './lib/stats'
 import Header from './components/Header'
@@ -19,8 +19,16 @@ export default function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches
   })
 
+  const primeraVez = useRef(true)
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', oscuro)
+    const root = document.documentElement
+    // Solo animamos el cambio de tema, no la carga inicial (evita parpadeo).
+    if (!primeraVez.current) {
+      root.classList.add('theme-transition')
+      window.setTimeout(() => root.classList.remove('theme-transition'), 500)
+    }
+    primeraVez.current = false
+    root.classList.toggle('dark', oscuro)
     localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')
   }, [oscuro])
 

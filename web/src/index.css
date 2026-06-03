@@ -135,3 +135,50 @@ body {
   filter: none !important;
   animation: none !important;
 }
+
+/* ---------- Transición suave al cambiar de tema ---------- */
+/* Se activa solo durante medio segundo al pulsar el botón claro/oscuro. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease,
+    fill 0.5s ease,
+    stroke 0.5s ease !important;
+}
+
+/* ---------- Malla de gradiente animada del hero ---------- */
+.hero-mesh {
+  background:
+    radial-gradient(38% 38% at 28% 30%, rgba(16, 185, 129, 0.45), transparent 70%),
+    radial-gradient(34% 34% at 75% 22%, rgba(6, 182, 212, 0.40), transparent 70%),
+    radial-gradient(40% 40% at 22% 78%, rgba(139, 92, 246, 0.38), transparent 70%),
+    radial-gradient(40% 40% at 80% 75%, rgba(236, 72, 153, 0.32), transparent 70%);
+  filter: blur(44px);
+  animation: meshSpin 22s linear infinite;
+}
+@keyframes meshSpin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.18);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition * {
+    transition: none !important;
+  }
+  .hero-mesh {
+    animation: none !important;
+    transform: translate(-50%, -50%);
+  }
+}

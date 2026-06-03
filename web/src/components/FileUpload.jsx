@@ -23,7 +23,12 @@ export default function FileUpload({ onArchivo, error, cargando }) {
   return (
     <div className="py-10 sm:py-16">
       {/* Hero */}
-      <div className="mx-auto max-w-2xl text-center animate-fade-in-up">
+      <div className="relative mx-auto max-w-2xl text-center animate-fade-in-up">
+        {/* Malla de gradiente animada de fondo */}
+        <div
+          aria-hidden
+          className="hero-mesh pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[150%] w-[150%] opacity-70 dark:opacity-50"
+        />
         <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/50 px-4 py-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-300">
           🔒 100% privado · sin servidores
         </span>
