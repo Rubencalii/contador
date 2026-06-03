@@ -3,6 +3,7 @@ import { toPng } from 'html-to-image'
 import StatCard from './StatCard'
 import PersonRanking from './PersonRanking'
 import DataTable from './DataTable'
+import Reveal from './Reveal'
 import ActivityCharts from './ActivityCharts'
 import ExtraCharts from './ExtraCharts'
 import EmojiWords from './EmojiWords'
@@ -35,6 +36,8 @@ export default function Dashboard({ stats, nombreArchivo, onReiniciar }) {
   async function descargarImagen() {
     if (!ref.current) return
     setDescargando(true)
+    // Forzamos todas las secciones visibles para que no salgan en blanco.
+    ref.current.classList.add('capturando')
     try {
       const oscuro = document.documentElement.classList.contains('dark')
       const dataUrl = await toPng(ref.current, {
@@ -50,6 +53,7 @@ export default function Dashboard({ stats, nombreArchivo, onReiniciar }) {
       console.error('No se pudo generar la imagen', e)
       alert('No se pudo generar la imagen. Inténtalo de nuevo.')
     } finally {
+      ref.current?.classList.remove('capturando')
       setDescargando(false)
     }
   }
@@ -92,44 +96,46 @@ export default function Dashboard({ stats, nombreArchivo, onReiniciar }) {
 
       {/* Contenido capturable */}
       <div ref={ref} className="space-y-8 rounded-2xl">
-        {/* Tarjetas de totales */}
+        {/* Tarjetas de totales (entran escalonadas y cuentan desde 0) */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <StatCard icono="💬" valor={stats.totalMensajes} etiqueta="Mensajes" color="emerald" />
-          <StatCard icono="👥" valor={stats.numPersonas} etiqueta="Personas" color="sky" />
-          <StatCard icono="📷" valor={stats.totalTipos.imagen} etiqueta="Imágenes" color="violet" />
-          <StatCard icono="🎤" valor={stats.totalTipos.audio} etiqueta="Audios" color="amber" />
-          <StatCard icono="🩹" valor={stats.totalTipos.sticker} etiqueta="Stickers" color="rose" />
-          <StatCard icono="😀" valor={stats.totalEmojis} etiqueta="Emojis" color="cyan" />
+          <StatCard icono="💬" valor={stats.totalMensajes} etiqueta="Mensajes" color="emerald" delay={0} />
+          <StatCard icono="👥" valor={stats.numPersonas} etiqueta="Personas" color="sky" delay={60} />
+          <StatCard icono="📷" valor={stats.totalTipos.imagen} etiqueta="Imágenes" color="violet" delay={120} />
+          <StatCard icono="🎤" valor={stats.totalTipos.audio} etiqueta="Audios" color="amber" delay={180} />
+          <StatCard icono="🩹" valor={stats.totalTipos.sticker} etiqueta="Stickers" color="rose" delay={240} />
+          <StatCard icono="😀" valor={stats.totalEmojis} etiqueta="Emojis" color="cyan" delay={300} />
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <StatCard icono="🎬" valor={stats.totalTipos.video} etiqueta="Vídeos" color="violet" />
-          <StatCard icono="🎞️" valor={stats.totalTipos.gif} etiqueta="GIFs" color="rose" />
-          <StatCard icono="📄" valor={stats.totalTipos.documento} etiqueta="Documentos" color="sky" />
-          <StatCard icono="🖼️" valor={multimedia} etiqueta="Multimedia total" color="amber" />
-          <StatCard icono="🔤" valor={stats.totalPalabras} etiqueta="Palabras" color="emerald" />
-          <StatCard icono="📅" valor={stats.mediaPorDia} etiqueta="Msg / día" color="cyan" />
+          <StatCard icono="🎬" valor={stats.totalTipos.video} etiqueta="Vídeos" color="violet" delay={0} />
+          <StatCard icono="🎞️" valor={stats.totalTipos.gif} etiqueta="GIFs" color="rose" delay={60} />
+          <StatCard icono="📄" valor={stats.totalTipos.documento} etiqueta="Documentos" color="sky" delay={120} />
+          <StatCard icono="🖼️" valor={multimedia} etiqueta="Multimedia total" color="amber" delay={180} />
+          <StatCard icono="🔤" valor={stats.totalPalabras} etiqueta="Palabras" color="emerald" delay={240} />
+          <StatCard icono="📅" valor={stats.mediaPorDia} etiqueta="Msg / día" color="cyan" delay={300} />
         </div>
 
-        <FunFacts curiosidades={stats.curiosidades} />
+        <Reveal><FunFacts curiosidades={stats.curiosidades} /></Reveal>
 
-        <Medallas medallas={stats.medallas} />
+        <Reveal><Medallas medallas={stats.medallas} /></Reveal>
 
-        <PersonRanking
-          personas={stats.personas}
-          total={stats.totalMensajes}
-          onSelect={(persona, color) => setSeleccion({ persona, color })}
-        />
+        <Reveal>
+          <PersonRanking
+            personas={stats.personas}
+            total={stats.totalMensajes}
+            onSelect={(persona, color) => setSeleccion({ persona, color })}
+          />
+        </Reveal>
 
-        <DataTable personas={stats.personas} total={stats.totalMensajes} />
+        <Reveal><DataTable personas={stats.personas} total={stats.totalMensajes} /></Reveal>
 
-        <ExtraStats stats={stats} />
+        <Reveal><ExtraStats stats={stats} /></Reveal>
 
-        <ActivityCharts stats={stats} />
+        <Reveal><ActivityCharts stats={stats} /></Reveal>
 
-        <ExtraCharts stats={stats} />
+        <Reveal><ExtraCharts stats={stats} /></Reveal>
 
-        <EmojiWords stats={stats} />
+        <Reveal><EmojiWords stats={stats} /></Reveal>
       </div>
 
       {seleccion && (

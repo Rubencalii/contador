@@ -102,3 +102,36 @@ body {
     background-position: 200% 0;
   }
 }
+
+/* Entrada de las tarjetas de totales (solo opacidad + un pelín de escala para
+   no pisar el translate del hover). El stagger se hace con animation-delay. */
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-card-in {
+  animation: cardIn 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-in,
+  .animate-fade-in-up,
+  .animate-blob {
+    animation: none !important;
+  }
+}
+
+/* Al generar la imagen descargable forzamos todo visible, aunque el usuario no
+   haya hecho scroll hasta esa sección (si no, saldría en blanco en el PNG). */
+.capturando [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  animation: none !important;
+}
