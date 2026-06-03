@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
-import JSZip from 'jszip'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { parseChat } from './lib/parser'
 import { calcularEstadisticas } from './lib/stats'
 import Header from './components/Header'
 import FileUpload from './components/FileUpload'
-import Dashboard from './components/Dashboard'
+
+// El Dashboard arrastra las librerías de gráficos (lo más pesado): lo cargamos
+// solo cuando hay estadísticas, así la pantalla inicial pesa mucho menos.
+const Dashboard = lazy(() => import('./components/Dashboard'))
 
 export default function App() {
   const [stats, setStats] = useState(null)
@@ -29,6 +31,7 @@ export default function App() {
 
   // Abre el .zip exportado por WhatsApp y devuelve el texto del chat (.txt de dentro).
   async function leerTxtDeZip(file) {
+    const { default: JSZip } = await import('jszip')
     const zip = await JSZip.loadAsync(file)
     const txts = Object.values(zip.files).filter(
       (f) => !f.dir && f.name.toLowerCase().endsWith('.txt')
@@ -104,11 +107,20 @@ export default function App() {
             cargando={cargando}
           />
         ) : (
-          <Dashboard
-            stats={stats}
-            nombreArchivo={nombreArchivo}
-            onReiniciar={reiniciar}
-          />
+          <Suspense
+            fallback={
+              <div className="flex flex-col items-center gap-3 py-24">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-500" />
+                <p className="font-medium text-slate-500">Preparando las gráficas…</p>
+              </div>
+            }
+          >
+            <Dashboard
+              stats={stats}
+              nombreArchivo={nombreArchivo}
+              onReiniciar={reiniciar}
+            />
+          </Suspense>
         )}
       </main>
       <footer className="border-t border-slate-200 dark:border-slate-800 py-6 text-center text-sm text-slate-500">

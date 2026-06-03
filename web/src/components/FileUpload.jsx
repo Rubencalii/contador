@@ -4,9 +4,20 @@ export default function FileUpload({ onArchivo, error, cargando }) {
   const inputRef = useRef(null)
   const [arrastrando, setArrastrando] = useState(false)
 
+  const [avisoTipo, setAvisoTipo] = useState('')
+
   function manejarFiles(files) {
     const file = files?.[0]
-    if (file) onArchivo(file)
+    if (!file) return
+    // El botón ya filtra por extensión, pero al arrastrar se puede soltar
+    // cualquier cosa: validamos aquí para dar un aviso claro.
+    const nombre = file.name.toLowerCase()
+    if (!nombre.endsWith('.txt') && !nombre.endsWith('.zip')) {
+      setAvisoTipo('Ese archivo no vale. Sube el .txt o el .zip que exporta WhatsApp.')
+      return
+    }
+    setAvisoTipo('')
+    onArchivo(file)
   }
 
   return (
@@ -74,9 +85,9 @@ export default function FileUpload({ onArchivo, error, cargando }) {
           )}
         </div>
 
-        {error && (
+        {(error || avisoTipo) && (
           <div className="mt-4 rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm text-red-700 dark:text-red-300">
-            ⚠️ {error}
+            ⚠️ {avisoTipo || error}
           </div>
         )}
       </div>
