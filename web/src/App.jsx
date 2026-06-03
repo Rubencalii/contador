@@ -22,6 +22,11 @@ export default function App() {
     localStorage.setItem('tema', oscuro ? 'oscuro' : 'claro')
   }, [oscuro])
 
+  // Tamaños máximos para no colgar el navegador con archivos enormes o un
+  // "zip bomb" (un .zip pequeño que se descomprime a varios GB de texto).
+  const MAX_ARCHIVO = 300 * 1024 * 1024 // 300 MB del archivo subido
+  const MAX_TXT = 200 * 1024 * 1024 // 200 MB del chat ya descomprimido
+
   // Abre el .zip exportado por WhatsApp y devuelve el texto del chat (.txt de dentro).
   async function leerTxtDeZip(file) {
     const zip = await JSZip.loadAsync(file)
@@ -34,11 +39,20 @@ export default function App() {
     // WhatsApp suele llamarlo "_chat.txt"; si no, cogemos el primero.
     const chat =
       txts.find((f) => f.name.toLowerCase().endsWith('_chat.txt')) || txts[0]
+    // Comprobamos el tamaño ya descomprimido antes de cargarlo en memoria.
+    const tam = chat._data?.uncompressedSize
+    if (typeof tam === 'number' && tam > MAX_TXT) {
+      throw new Error('El chat dentro del .zip es demasiado grande para procesarlo.')
+    }
     return chat.async('text')
   }
 
   async function procesarArchivo(file) {
     setError('')
+    if (file.size > MAX_ARCHIVO) {
+      setError('El archivo es demasiado grande (máximo 300 MB).')
+      return
+    }
     setCargando(true)
     setNombreArchivo(file.name)
     try {

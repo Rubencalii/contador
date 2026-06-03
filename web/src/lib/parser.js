@@ -30,6 +30,43 @@ const MARCADORES = {
 }
 const MULTIMEDIA_GENERICO = ['<multimedia omitido>', '<media omitted>']
 
+// Adjuntos cuando se exporta "Con archivos" (el .txt nombra cada fichero):
+//   Android:  IMG-20231225-WA0001.jpg (archivo adjunto)
+//   iOS:      ‎<adjunto: 00000042-PHOTO-2023-12-25-14-30-45.jpg>
+const RE_ADJUNTO_IOS = /<(?:adjunto|attached):\s*(.+?)>/i
+const RE_ADJUNTO_ANDROID = /^(.+?)\s*\((?:archivo adjunto|file attached)\)\s*$/i
+
+// Clasificación de un adjunto según el prefijo o la extensión de su nombre.
+const PREFIJO_TIPO = [
+  [/^IMG[-_]/i, 'imagen'],
+  [/^VID[-_]/i, 'video'],
+  [/^(?:PTT|AUD)[-_]/i, 'audio'],
+  [/^STK[-_]/i, 'sticker'],
+  [/^GIF[-_]/i, 'gif'],
+  [/^DOC[-_]/i, 'documento'],
+  [/PHOTO/i, 'imagen'],
+  [/VIDEO/i, 'video'],
+  [/AUDIO/i, 'audio'],
+  [/STICKER/i, 'sticker'],
+]
+const EXT_TIPO = {
+  jpg: 'imagen', jpeg: 'imagen', png: 'imagen', heic: 'imagen', heif: 'imagen', bmp: 'imagen',
+  webp: 'sticker',
+  gif: 'gif',
+  mp4: 'video', '3gp': 'video', mov: 'video', mkv: 'video', avi: 'video', webm: 'video',
+  opus: 'audio', m4a: 'audio', mp3: 'audio', aac: 'audio', ogg: 'audio', amr: 'audio', wav: 'audio',
+  pdf: 'documento', doc: 'documento', docx: 'documento', xls: 'documento', xlsx: 'documento',
+  ppt: 'documento', pptx: 'documento', csv: 'documento', zip: 'documento',
+  vcf: 'contacto',
+}
+
+function clasificarNombreArchivo(nombre) {
+  const base = nombre.replace(/‎/g, '').trim()
+  for (const [re, tipo] of PREFIJO_TIPO) if (re.test(base)) return tipo
+  const ext = base.includes('.') ? base.split('.').pop().toLowerCase() : ''
+  return EXT_TIPO[ext] || 'multimedia'
+}
+
 // Mensajes de sistema que NO son de una persona real.
 const SISTEMA = [
   'los mensajes y las llamadas están cifrados',
@@ -63,10 +100,12 @@ function normalizarHora(h, ampm) {
 }
 
 function clasificar(texto) {
-  const t = texto
-    .toLowerCase()
-    .replace(/‎/g, '')
-    .trim()
+  const limpio = texto.replace(/‎/g, '').trim()
+  // Adjuntos reales (exportación "Con archivos"): clasificamos por el nombre.
+  const adj = RE_ADJUNTO_IOS.exec(limpio) || RE_ADJUNTO_ANDROID.exec(limpio)
+  if (adj) return clasificarNombreArchivo(adj[1])
+
+  const t = limpio.toLowerCase()
   for (const [tipo, marcas] of Object.entries(MARCADORES)) {
     for (const marca of marcas) {
       if (t.includes(marca)) return tipo
@@ -121,9 +160,13 @@ export function parseChat(contenido) {
     const mes = ddmm ? c.d2 : c.d1
     let anio = c.anio
     if (anio < 100) anio += 2000
+    // Descartamos fechas imposibles: si no validamos, JS las "desborda"
+    // (p. ej. 31/13 se convierte en una fecha real del año siguiente).
+    if (mes < 1 || mes > 12 || dia < 1 || dia > 31) continue
+    if (c.hh > 23 || c.mm > 59 || c.ss > 59) continue
     const hora = normalizarHora(c.hh, c.ampm)
     const fecha = new Date(anio, mes - 1, dia, hora, c.mm, c.ss)
-    if (isNaN(fecha.getTime())) continue
+    if (isNaN(fecha.getTime()) || fecha.getMonth() !== mes - 1) continue
     mensajes.push({
       fecha,
       autor: c.autor,

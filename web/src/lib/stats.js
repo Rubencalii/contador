@@ -56,16 +56,20 @@ function nuevoContadorTipos() {
 export function calcularEstadisticas(mensajes) {
   if (!mensajes.length) return null
 
-  const personas = {} // autor -> stats
+  // Usamos Object.create(null) en los mapas indexados por datos del chat
+  // (autor, emoji, palabra...) para evitar "prototype pollution": un autor
+  // llamado "__proto__" o "constructor" colisionaría con el prototipo de un
+  // objeto normal y rompería el cálculo.
+  const personas = Object.create(null) // autor -> stats
   const totalTipos = nuevoContadorTipos()
   const porHora = Array(24).fill(0)
   const porDiaSemana = Array(7).fill(0)
-  const porFecha = {} // 'YYYY-MM-DD' -> count
-  const porMes = {} // 'YYYY-MM' -> count
-  const emojisGlobal = {}
-  const palabrasGlobal = {}
+  const porFecha = Object.create(null) // 'YYYY-MM-DD' -> count
+  const porMes = Object.create(null) // 'YYYY-MM' -> count
+  const emojisGlobal = Object.create(null)
+  const palabrasGlobal = Object.create(null)
   const heatmap = Array.from({ length: 7 }, () => Array(24).fill(0)) // [dia][hora]
-  const parejas = {} // 'A||B' -> nº de intercambios
+  const parejas = Object.create(null) // 'A||B' -> nº de intercambios
 
   let totalEmojis = 0
   let totalPalabras = 0
@@ -93,8 +97,8 @@ export function calcularEstadisticas(mensajes) {
         textos: 0,
         risas: 0,
         eliminados: 0,
-        emojisTop: {},
-        palabrasTop: {},
+        emojisTop: Object.create(null),
+        palabrasTop: Object.create(null),
         iniciosConversacion: 0,
         horas: Array(24).fill(0),
         diasSemana: Array(7).fill(0),
