@@ -22,6 +22,3 @@ venv/
 .idea/
 .DS_Store
 *.local
-
-# Claude
-.claude/
