@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { toPng } from 'html-to-image'
-import { MessageCircle, Users, Image as ImageIcon, Mic, Sticker, Smile, Video, Film, FileText, LayoutGrid, Type, Calendar, Gift, Download, RefreshCcw } from 'lucide-react'
+import { Gift, Download, RefreshCcw } from 'lucide-react'
 import DataTable from './DataTable'
 import Reveal from './Reveal'
 import ActivityCharts from './ActivityCharts'
@@ -19,15 +19,6 @@ export default function Dashboard({ stats, nombreArchivo, onReiniciar }) {
   const [descargando, setDescargando] = useState(false)
   const [seleccion, setSeleccion] = useState(null) // { persona, color }
   const [wrapped, setWrapped] = useState(false)
-
-  const multimedia =
-    stats.totalTipos.imagen +
-    stats.totalTipos.video +
-    stats.totalTipos.audio +
-    stats.totalTipos.sticker +
-    stats.totalTipos.gif +
-    stats.totalTipos.documento +
-    stats.totalTipos.multimedia
 
   async function descargarImagen() {
     if (!ref.current) return

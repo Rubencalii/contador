@@ -1,4 +1,4 @@
-import { MessageCircle, Sun, Moon } from 'lucide-react'
+import { Sun, Moon } from 'lucide-react'
 
 export default function Header({ oscuro, onToggle, onLogo }) {
   return (
