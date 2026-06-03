@@ -1,17 +1,16 @@
 import { useRef, useState } from 'react'
-import { Lock, UploadCloud } from 'lucide-react'
+import { Lock, UploadCloud, HelpCircle } from 'lucide-react'
+import TutorialModal from './TutorialModal'
 
 export default function FileUpload({ onArchivo, error, cargando }) {
   const inputRef = useRef(null)
   const [arrastrando, setArrastrando] = useState(false)
-
   const [avisoTipo, setAvisoTipo] = useState('')
+  const [mostrarTutorial, setMostrarTutorial] = useState(false)
 
   function manejarFiles(files) {
     const file = files?.[0]
     if (!file) return
-    // El botón ya filtra por extensión, pero al arrastrar se puede soltar
-    // cualquier cosa: validamos aquí para dar un aviso claro.
     const nombre = file.name.toLowerCase()
     if (!nombre.endsWith('.txt') && !nombre.endsWith('.zip')) {
       setAvisoTipo('Ese archivo no vale. Sube el .txt o el .zip que exporta WhatsApp.')
@@ -22,10 +21,20 @@ export default function FileUpload({ onArchivo, error, cargando }) {
   }
 
   return (
-    <div className="py-14 sm:py-24">
+    <div className="py-14 sm:py-24 relative">
+      
+      {/* 3D Assets Backgrounds */}
+      <div className="absolute top-10 right-0 lg:right-20 w-64 lg:w-96 opacity-30 dark:opacity-60 pointer-events-none -z-10 animate-float">
+        <img src="/orb.png" alt="" className="hidden dark:block w-full h-auto mix-blend-screen" />
+        <img src="/orb_light.png" alt="" className="block dark:hidden w-full h-auto mix-blend-multiply opacity-30" />
+      </div>
+      <div className="absolute top-40 left-0 lg:left-20 w-48 lg:w-64 opacity-20 dark:opacity-40 pointer-events-none -z-10 animate-float-delayed">
+        <img src="/shapes.png" alt="" className="hidden dark:block w-full h-auto mix-blend-screen" />
+        <img src="/shapes_light.png" alt="" className="block dark:hidden w-full h-auto mix-blend-multiply opacity-30" />
+      </div>
+
       {/* Hero */}
       <div className="relative mx-auto max-w-2xl text-center animate-fade-in-up">
-        {/* Malla de gradiente animada de fondo */}
         <div
           aria-hidden
           className="hero-mesh pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[150%] w-[150%] opacity-70 dark:opacity-50"
@@ -41,9 +50,19 @@ export default function FileUpload({ onArchivo, error, cargando }) {
           Descubre quién habla más, cuántas fotos y audios se mandan, los emojis
           favoritos del grupo y datos curiosos. Todo se procesa en tu navegador.
         </p>
+
+        {/* Tutorial Button (Replaces the static cards) */}
+        <div className="mt-8">
+          <button 
+            onClick={() => setMostrarTutorial(true)}
+            className="inline-flex items-center gap-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 px-6 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
+          >
+            <HelpCircle className="h-5 w-5 text-amber-500" /> ¿Cómo descargo mi chat de WhatsApp?
+          </button>
+        </div>
       </div>
 
-      {/* Zona de subida */}
+      {/* Zona de subida (Glassmorphism Premium) */}
       <div className="mx-auto mt-12 max-w-2xl">
         <div
           onDragOver={(e) => {
@@ -57,14 +76,15 @@ export default function FileUpload({ onArchivo, error, cargando }) {
             manejarFiles(e.dataTransfer.files)
           }}
           onClick={() => inputRef.current?.click()}
-          className={`group cursor-pointer rounded-[2rem] border-2 border-dashed p-12 text-center transition-all duration-500 relative
+          className={`group cursor-pointer rounded-[3rem] p-12 text-center transition-all duration-500 relative border overflow-hidden
             ${
               arrastrando
-                ? 'border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/60 scale-[1.02] shadow-[0_0_40px_rgba(16,185,129,0.2)]'
-                : 'border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 hover:border-emerald-400 hover:bg-white/80 dark:hover:bg-slate-900/80 backdrop-blur-xl'
+                ? 'border-emerald-400 bg-emerald-50/90 dark:bg-[#0a0a0a]/90 scale-[1.02] shadow-[0_0_50px_rgba(16,185,129,0.3)] backdrop-blur-2xl'
+                : 'border-white/30 dark:border-white/10 bg-white/60 dark:bg-[#0a0a0a]/60 hover:border-emerald-400/50 hover:bg-white/90 dark:hover:bg-[#111111]/90 backdrop-blur-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]'
             }`}
         >
-          {arrastrando && <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_0_20px_rgba(16,185,129,0.2)] pointer-events-none" />}
+          {arrastrando && <div className="absolute inset-0 rounded-[3rem] shadow-[inset_0_0_30px_rgba(16,185,129,0.2)] pointer-events-none" />}
+          
           <input
             ref={inputRef}
             type="file"
@@ -72,6 +92,7 @@ export default function FileUpload({ onArchivo, error, cargando }) {
             className="hidden"
             onChange={(e) => manejarFiles(e.target.files)}
           />
+          
           {cargando ? (
             <div className="flex flex-col items-center gap-4 py-8">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/20 border-t-emerald-500 relative">
@@ -81,13 +102,13 @@ export default function FileUpload({ onArchivo, error, cargando }) {
             </div>
           ) : (
             <>
-              <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-xl shadow-emerald-500/20 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-500">
-                <UploadCloud className="h-8 w-8" strokeWidth={2.5} />
+              <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-xl shadow-emerald-500/30 group-hover:scale-110 group-hover:-translate-y-2 group-hover:rotate-3 transition-all duration-500">
+                <UploadCloud className="h-10 w-10" strokeWidth={2.5} />
               </div>
-              <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-                Arrastra aquí tu archivo <code className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-sm">.txt</code> o <code className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-sm">.zip</code>
+              <p className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                Arrastra aquí tu archivo <code className="rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-1 text-base">.txt</code> o <code className="rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-1 text-base">.zip</code>
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-3 text-base font-medium text-slate-500">
                 o haz clic para seleccionarlo
               </p>
             </>
@@ -95,50 +116,13 @@ export default function FileUpload({ onArchivo, error, cargando }) {
         </div>
 
         {(error || avisoTipo) && (
-          <div className="mt-4 rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+          <div className="mt-6 rounded-2xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-5 py-4 text-sm font-semibold text-red-700 dark:text-red-300 shadow-sm animate-fade-in-up">
             ⚠️ {avisoTipo || error}
           </div>
         )}
       </div>
 
-      {/* Cómo exportar */}
-      <div className="mx-auto mt-12 max-w-3xl">
-        <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-slate-500">
-          Cómo conseguir el archivo
-        </h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              n: '1',
-              t: 'Abre el grupo',
-              d: 'En WhatsApp, entra al grupo y pulsa el menú (⋮) o el nombre del grupo.',
-            },
-            {
-              n: '2',
-              t: 'Exportar chat',
-              d: 'Elige “Exportar chat” → “Sin archivos” (.txt) o “Con archivos” (.zip). Las dos valen.',
-            },
-            {
-              n: '3',
-              t: 'Sube el archivo',
-              d: 'Tráelo aquí y arrástralo a la zona de arriba: acepta tanto el .txt como el .zip.',
-            },
-          ].map((p) => (
-            <div
-              key={p.n}
-              className="card card-hover p-5"
-            >
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-100 dark:bg-emerald-950 font-bold text-emerald-600 dark:text-emerald-400">
-                {p.n}
-              </span>
-              <h3 className="mt-3 font-semibold text-slate-800 dark:text-slate-100">
-                {p.t}
-              </h3>
-              <p className="mt-1 text-sm text-slate-500">{p.d}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {mostrarTutorial && <TutorialModal onClose={() => setMostrarTutorial(false)} />}
     </div>
   )
 }

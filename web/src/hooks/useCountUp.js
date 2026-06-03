@@ -6,18 +6,16 @@ export function useCountUp(objetivo, activo, duracion = 1200) {
   const [valor, setValor] = useState(0)
   const rafRef = useRef(0)
 
-  useEffect(() => {
-    if (!activo) return
+  // Solo animamos si está activo, es un número finito distinto de 0 y el
+  // usuario no pidió reducir animaciones. Si no, devolvemos el valor directo.
+  const reduce =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  const animar =
+    activo && typeof objetivo === 'number' && isFinite(objetivo) && objetivo !== 0 && !reduce
 
-    // Si no es un número finito, o el usuario pidió menos animaciones, o es 0,
-    // lo mostramos directamente sin contar.
-    const reduce =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    if (typeof objetivo !== 'number' || !isFinite(objetivo) || objetivo === 0 || reduce) {
-      setValor(objetivo)
-      return
-    }
+  useEffect(() => {
+    if (!animar) return
 
     const inicio = performance.now()
     const tick = (ahora) => {
@@ -32,7 +30,7 @@ export function useCountUp(objetivo, activo, duracion = 1200) {
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [objetivo, activo, duracion])
+  }, [objetivo, animar, duracion])
 
-  return valor
+  return animar ? valor : objetivo
 }

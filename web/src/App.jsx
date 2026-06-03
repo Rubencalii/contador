@@ -98,13 +98,9 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors">
-      {/* Fondo decorativo con manchas de color */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-emerald-400/20 dark:bg-emerald-500/10 blur-3xl animate-blob" />
-        <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-cyan-400/20 dark:bg-cyan-500/10 blur-3xl animate-blob [animation-delay:6s]" />
-        <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-violet-400/15 dark:bg-violet-500/10 blur-3xl animate-blob [animation-delay:12s]" />
-      </div>
+    <div className="relative min-h-screen overflow-x-hidden bg-white dark:bg-[#030712] text-slate-800 dark:text-slate-200 transition-colors">
+      {/* Fondo decorativo premium - gradiente radial sutil en el centro arriba */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.1),transparent)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),transparent)]" />
 
       <Header oscuro={oscuro} onToggle={() => setOscuro((v) => !v)} onLogo={reiniciar} />
       <main className="mx-auto w-full max-w-6xl px-4 pb-20">

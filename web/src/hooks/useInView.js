@@ -4,16 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 // la primera vez que entra en pantalla. Sirve para animar al hacer scroll.
 export function useInView({ threshold = 0.15, once = true } = {}) {
   const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
+  // Si el navegador no soporta IntersectionObserver, arrancamos visible (sin animar).
+  const [visible, setVisible] = useState(
+    () => typeof IntersectionObserver === 'undefined'
+  )
 
   useEffect(() => {
     const el = ref.current
-    if (!el) return
-    // Si el navegador no soporta IntersectionObserver, mostramos sin animar.
-    if (typeof IntersectionObserver === 'undefined') {
-      setVisible(true)
-      return
-    }
+    if (!el || typeof IntersectionObserver === 'undefined') return
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

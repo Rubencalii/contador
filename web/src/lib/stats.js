@@ -235,7 +235,7 @@ export function calcularEstadisticas(mensajes) {
     }
   }
 
-  const medallas = calcularMedallas(listaPersonas, mensajeMasLargo)
+  const medallas = calcularMedallas(listaPersonas)
 
   const curiosidades = construirCuriosidades(
     listaPersonas,
@@ -363,7 +363,7 @@ function top(obj, n) {
 }
 
 // ---- Medallas / premios divertidos ----
-function calcularMedallas(personas, mensajeMasLargo) {
+function calcularMedallas(personas) {
   const medallas = []
   const varios = personas.length >= 2
 

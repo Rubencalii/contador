@@ -1,16 +1,11 @@
 import { useRef, useState } from 'react'
 import { toPng } from 'html-to-image'
 import { MessageCircle, Users, Image as ImageIcon, Mic, Sticker, Smile, Video, Film, FileText, LayoutGrid, Type, Calendar, Gift, Download, RefreshCcw } from 'lucide-react'
-import StatCard from './StatCard'
-import PersonRanking from './PersonRanking'
 import DataTable from './DataTable'
 import Reveal from './Reveal'
 import ActivityCharts from './ActivityCharts'
-import ExtraCharts from './ExtraCharts'
-import EmojiWords from './EmojiWords'
-import FunFacts from './FunFacts'
-import Medallas from './Medallas'
-import ExtraStats from './ExtraStats'
+import HeroBento from './HeroBento'
+import AwardsBento from './AwardsBento'
 import PersonModal from './PersonModal'
 import WrappedModal from './WrappedModal'
 
@@ -97,46 +92,20 @@ export default function Dashboard({ stats, nombreArchivo, onReiniciar }) {
 
       {/* Contenido capturable */}
       <div ref={ref} className="space-y-10 rounded-3xl pb-10">
-        {/* Tarjetas de totales (entran escalonadas y cuentan desde 0) */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          <StatCard icono={MessageCircle} valor={stats.totalMensajes} etiqueta="Mensajes" color="emerald" delay={0} />
-          <StatCard icono={Users} valor={stats.numPersonas} etiqueta="Personas" color="sky" delay={60} />
-          <StatCard icono={ImageIcon} valor={stats.totalTipos.imagen} etiqueta="Imágenes" color="violet" delay={120} />
-          <StatCard icono={Mic} valor={stats.totalTipos.audio} etiqueta="Audios" color="amber" delay={180} />
-          <StatCard icono={Sticker} valor={stats.totalTipos.sticker} etiqueta="Stickers" color="rose" delay={240} />
-          <StatCard icono={Smile} valor={stats.totalEmojis} etiqueta="Emojis" color="cyan" delay={300} />
-        </div>
+        
+        <Reveal><HeroBento stats={stats} /></Reveal>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          <StatCard icono={Video} valor={stats.totalTipos.video} etiqueta="Vídeos" color="violet" delay={0} />
-          <StatCard icono={Film} valor={stats.totalTipos.gif} etiqueta="GIFs" color="rose" delay={60} />
-          <StatCard icono={FileText} valor={stats.totalTipos.documento} etiqueta="Documentos" color="sky" delay={120} />
-          <StatCard icono={LayoutGrid} valor={multimedia} etiqueta="Multimedia" color="amber" delay={180} />
-          <StatCard icono={Type} valor={stats.totalPalabras} etiqueta="Palabras" color="emerald" delay={240} />
-          <StatCard icono={Calendar} valor={stats.mediaPorDia} etiqueta="Msj / Día" color="cyan" delay={300} />
-        </div>
-
-        <Reveal><FunFacts curiosidades={stats.curiosidades} /></Reveal>
-
-        <Reveal><Medallas medallas={stats.medallas} /></Reveal>
+        <Reveal><AwardsBento medallas={stats.medallas} curiosidades={stats.curiosidades} /></Reveal>
 
         <Reveal>
-          <PersonRanking
-            personas={stats.personas}
-            total={stats.totalMensajes}
+          <DataTable 
+            personas={stats.personas} 
+            total={stats.totalMensajes} 
             onSelect={(persona, color) => setSeleccion({ persona, color })}
           />
         </Reveal>
 
-        <Reveal><DataTable personas={stats.personas} total={stats.totalMensajes} /></Reveal>
-
-        <Reveal><ExtraStats stats={stats} /></Reveal>
-
         <Reveal><ActivityCharts stats={stats} /></Reveal>
-
-        <Reveal><ExtraCharts stats={stats} /></Reveal>
-
-        <Reveal><EmojiWords stats={stats} /></Reveal>
       </div>
 
       {seleccion && (

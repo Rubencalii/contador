@@ -48,7 +48,7 @@ function mostrar(p, col, total) {
   }
 }
 
-export default function DataTable({ personas, total }) {
+export default function DataTable({ personas, total, onSelect }) {
   const [orden, setOrden] = useState({ key: 'total', dir: 'desc' })
 
   const ordenadas = [...personas].sort((a, b) => {
@@ -71,16 +71,16 @@ export default function DataTable({ personas, total }) {
 
   return (
     <section className="card p-5 sm:p-6">
-      <h2 className="section-title">📋 Tabla detallada</h2>
+      <h2 className="section-title">📋 Detalles por persona</h2>
       <p className="mt-1 text-sm text-slate-500">
-        Todos los datos por persona · haz clic en una columna para ordenar
+        Haz clic en cualquier persona para ver su ADN detallado
       </p>
 
-      <div className="mt-4 -mx-2 overflow-x-auto">
+      <div className="mt-6 -mx-2 overflow-x-auto">
         <table className="w-full min-w-[640px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800">
-              <th className="px-2 py-2 text-right text-xs font-semibold text-slate-400">
+            <tr className="border-b border-slate-100 dark:border-white/5 pb-2">
+              <th className="px-2 pb-3 pt-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-400">
                 #
               </th>
               {COLUMNAS.map((col) => {
@@ -106,9 +106,10 @@ export default function DataTable({ personas, total }) {
             {ordenadas.map((p, i) => (
               <tr
                 key={p.autor}
-                className="border-b border-slate-100 dark:border-slate-800/60 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                onClick={() => onSelect?.(p, 'bg-emerald-500')}
+                className="group relative transition-all hover:bg-slate-50 dark:hover:bg-white/[0.02] cursor-pointer"
               >
-                <td className="px-2 py-2 text-right text-xs text-slate-400 tabular-nums">
+                <td className="px-2 py-3 text-right text-xs text-slate-400 tabular-nums">
                   {i + 1}
                 </td>
                 {COLUMNAS.map((col) => (

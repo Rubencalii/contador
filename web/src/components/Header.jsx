@@ -8,9 +8,10 @@ export default function Header({ oscuro, onToggle, onLogo }) {
           onClick={onLogo}
           className="group flex items-center gap-3 text-2xl font-black tracking-tighter transition-all"
         >
-          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform duration-300">
-            <MessageCircle className="h-5 w-5 text-white" strokeWidth={2.5} />
-          </span>
+          <div className="relative h-10 w-10 overflow-hidden rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-110 transition-transform duration-300">
+            <img src="/logo_dark.png" alt="ChatStats Logo" className="hidden dark:block h-full w-full object-cover scale-110" style={{ WebkitUserDrag: 'none' }} />
+            <img src="/logo_light.png" alt="ChatStats Logo" className="block dark:hidden h-full w-full object-cover scale-110" style={{ WebkitUserDrag: 'none' }} />
+          </div>
           <span>
             Chat<span className="text-gradient">Stats</span>
           </span>

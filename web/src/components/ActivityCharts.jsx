@@ -58,7 +58,7 @@ export default function ActivityCharts({ stats }) {
           subtitulo={usarMeses ? 'Mensajes por mes' : 'Mensajes por día'}
         >
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={serie} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+            <AreaChart data={serie} margin={{ top: 5, right: 10, bottom: 0, left: 10 }}>
               <defs>
                 <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#10b981" stopOpacity={0.6} />
@@ -72,9 +72,10 @@ export default function ActivityCharts({ stats }) {
                 tick={{ fontSize: 11, fill: '#94a3b8' }}
                 minTickGap={28}
               />
-              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} width={40} />
+              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
               <Tooltip
                 contentStyle={tooltipStyle}
+                itemStyle={{ color: '#fff' }}
                 labelFormatter={formatearEtiquetaDia}
                 formatter={(v) => [v.toLocaleString('es'), 'Mensajes']}
               />
@@ -92,16 +93,17 @@ export default function ActivityCharts({ stats }) {
 
       <Tarjeta titulo="🕐 ¿A qué hora se habla?" subtitulo="Mensajes por hora del día">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={datosHora} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+          <BarChart data={datosHora} margin={{ top: 5, right: 10, bottom: 0, left: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" vertical={false} />
             <XAxis
               dataKey="hora"
               tick={{ fontSize: 10, fill: '#94a3b8' }}
               interval={2}
             />
-            <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} width={40} />
+            <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
             <Tooltip
               contentStyle={tooltipStyle}
+              itemStyle={{ color: '#fff' }}
               cursor={{ fill: 'rgba(148,163,184,0.1)' }}
               formatter={(v) => [v.toLocaleString('es'), 'Mensajes']}
             />
@@ -118,13 +120,14 @@ export default function ActivityCharts({ stats }) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={stats.porDiaSemana}
-            margin={{ top: 5, right: 5, bottom: 0, left: -20 }}
+            margin={{ top: 5, right: 10, bottom: 0, left: 10 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" vertical={false} />
             <XAxis dataKey="etiqueta" tick={{ fontSize: 11, fill: '#94a3b8' }} />
-            <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} width={40} />
+            <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
             <Tooltip
               contentStyle={tooltipStyle}
+              itemStyle={{ color: '#fff' }}
               cursor={{ fill: 'rgba(148,163,184,0.1)' }}
               formatter={(v) => [v.toLocaleString('es'), 'Mensajes']}
             />
